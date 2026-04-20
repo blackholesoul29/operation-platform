@@ -106,7 +106,7 @@ const userRole = computed(() => {
       <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-primary">
         <Zap class="h-5 w-5 text-white" />
       </div>
-      <span class="text-xl font-bold tracking-tight text-white">EnerFlow</span>
+      <span class="text-xl font-bold tracking-tight text-white">Unergy</span>
       <button class="ml-auto lg:hidden text-slate-400 hover:text-white" @click="emit('close')">
         <X class="h-5 w-5" />
       </button>

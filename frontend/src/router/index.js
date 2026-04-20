@@ -2,13 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import BlankLayout from '@/components/layout/BlankLayout.vue'
 
 const routes = [
-  {
-    path: '/login',
-    name: 'login',
-    component: () => import('@/views/LoginView.vue'),
-    meta: { public: true },
-  },
-
   // Info Técnica, CGM y Liquidaciones — pantalla en blanco (el shell los maneja)
   { path: '/proyectos',     name: 'proyectos',     component: BlankLayout },
   { path: '/cgm',           name: 'cgm',           component: BlankLayout },
@@ -18,7 +11,6 @@ const routes = [
   {
     path: '/',
     component: () => import('@/components/layout/AppLayout.vue'),
-    meta: { requiresAuth: true },
     children: [
       { path: '',                  name: 'dashboard',     component: () => import('@/views/DashboardView.vue') },
       { path: 'pipeline',          name: 'pipeline',      component: () => import('@/views/PipelineView.vue') },
@@ -42,21 +34,6 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
-})
-
-router.beforeEach((to) => {
-  const token = localStorage.getItem('enerflow_access')
-  const isAuthenticated = !!token
-
-  if (!to.meta.public && !isAuthenticated) {
-    return { name: 'login' }
-  }
-
-  if (to.name === 'login' && isAuthenticated) {
-    return { name: 'dashboard' }
-  }
-
-  return true
 })
 
 export default router

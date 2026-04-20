@@ -1,18 +1,5 @@
 <script setup>
-import { onMounted } from 'vue'
-import { useAuthStore } from '@/stores/auth'
-import { useNotificacionesStore } from '@/stores/notificaciones'
 import AppHeader from './AppHeader.vue'
-
-const authStore = useAuthStore()
-const notifStore = useNotificacionesStore()
-
-onMounted(async () => {
-  if (authStore.isAuthenticated) {
-    await authStore.fetchMe()
-    await notifStore.fetchCount()
-  }
-})
 </script>
 
 <template>
