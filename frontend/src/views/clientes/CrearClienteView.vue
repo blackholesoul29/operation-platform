@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, reactive } from 'vue'
 import { useClientesStore } from '@/stores/clientes'
-import { APPS_SCRIPT_URL } from '@/lib/config'
 import { Plus, Search, Edit, Trash2, ExternalLink, Upload, X } from 'lucide-vue-next'
 import Button from '@/components/ui/Button.vue'
 import Input from '@/components/ui/Input.vue'
@@ -63,9 +62,7 @@ const editForm = reactive({
   periodo_renovacion: '',
 })
 
-const isConfigured = !!APPS_SCRIPT_URL
-
-onMounted(() => { if (isConfigured) store.fetchClientes() })
+onMounted(() => store.fetchClientes())
 
 const filteredClientes = computed(() => {
   if (!search.value) return store.clientes
@@ -187,20 +184,10 @@ const docsCount = (c) => ALL_DOC_KEYS.filter(k => c[`${k}_url`]).length
 <template>
   <div class="space-y-4">
 
-    <!-- Aviso si no está configurado el Apps Script -->
-    <div v-if="!isConfigured" class="rounded-lg bg-amber-50 border border-amber-200 px-4 py-3 text-sm text-amber-800 flex gap-2">
-      <span>⚠️</span>
-      <span>
-        Falta configurar la URL del Apps Script. Abre
-        <code class="font-mono bg-amber-100 px-1 rounded">src/lib/config.js</code>
-        y pega la URL después de desplegarlo.
-      </span>
-    </div>
-
     <!-- Header -->
     <div class="flex items-center gap-3">
       <h1 class="text-2xl font-bold flex-1">Creación de Clientes</h1>
-      <Button :disabled="!isConfigured" @click="openCreate">
+      <Button @click="openCreate">
         <Plus class="h-4 w-4 mr-1" /> Nuevo Cliente
       </Button>
     </div>
@@ -216,7 +203,7 @@ const docsCount = (c) => ALL_DOC_KEYS.filter(k => c[`${k}_url`]).length
       <div v-if="store.loading" class="flex justify-center py-16"><Spinner size="lg" /></div>
       <div v-else-if="store.error" class="text-center py-12 text-sm text-destructive">{{ store.error }}</div>
       <div v-else-if="!filteredClientes.length" class="text-center py-12 text-sm text-muted-foreground">
-        {{ isConfigured ? 'No hay clientes registrados aún.' : 'Configura el Apps Script para comenzar.' }}
+        No hay clientes registrados aún.
       </div>
       <table v-else class="w-full">
         <thead class="border-b bg-slate-50/80">
