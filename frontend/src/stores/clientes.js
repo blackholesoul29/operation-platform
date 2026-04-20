@@ -1,95 +1,79 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import api from '@/lib/api'
+import { googleApi } from '@/lib/googleApi'
 
 export const useClientesStore = defineStore('clientes', () => {
   const clientes = ref([])
-  const currentCliente = ref(null)
   const loading = ref(false)
-  const total = ref(0)
+  const uploading = ref({})  // { 'clientId_fieldName': true }
+  const error = ref(null)
 
-  async function fetchClientes(params = {}) {
+  async function fetchClientes() {
     loading.value = true
+    error.value = null
     try {
-      const { data } = await api.get('/clientes/', { params })
-      clientes.value = data.results || data
-      total.value = data.count || clientes.value.length
-    } finally {
-      loading.value = false
-    }
-  }
-
-  async function fetchCliente(id) {
-    loading.value = true
-    try {
-      const { data } = await api.get(`/clientes/${id}/`)
-      currentCliente.value = data
-      return data
+      const data = await googleApi.getClientes()
+      clientes.value = Array.isArray(data) ? data : []
+    } catch (e) {
+      error.value = e.message
+      clientes.value = []
     } finally {
       loading.value = false
     }
   }
 
   async function createCliente(payload) {
-    const { data } = await api.post('/clientes/', payload)
-    clientes.value.unshift(data)
-    total.value += 1
-    return data
+    const result = await googleApi.createCliente(payload)
+    await fetchClientes()
+    return result
   }
 
   async function updateCliente(id, payload) {
-    const { data } = await api.patch(`/clientes/${id}/`, payload)
-    if (currentCliente.value?.id === id) currentCliente.value = data
-    const idx = clientes.value.findIndex((c) => c.id === id)
-    if (idx !== -1) clientes.value[idx] = data
-    return data
+    await googleApi.updateCliente(id, payload)
+    await fetchClientes()
   }
 
   async function deleteCliente(id) {
-    await api.delete(`/clientes/${id}/`)
+    await googleApi.deleteCliente(id)
     clientes.value = clientes.value.filter((c) => c.id !== id)
-    total.value -= 1
   }
 
-  async function addContacto(clienteId, payload) {
-    const { data } = await api.post(`/clientes/${clienteId}/contactos/`, payload)
-    if (currentCliente.value?.id === clienteId) {
-      if (!currentCliente.value.contactos) currentCliente.value.contactos = []
-      currentCliente.value.contactos.push(data)
+  async function uploadFile(clientId, fieldName, file) {
+    const key = `${clientId}_${fieldName}`
+    uploading.value = { ...uploading.value, [key]: true }
+    try {
+      const result = await googleApi.uploadFile(clientId, fieldName, file)
+      // Actualizar el campo en local sin re-fetch completo
+      const idx = clientes.value.findIndex((c) => c.id === clientId)
+      if (idx >= 0) {
+        clientes.value[idx] = { ...clientes.value[idx], [`${fieldName}_url`]: result.fileUrl }
+      }
+      return result
+    } finally {
+      const u = { ...uploading.value }
+      delete u[key]
+      uploading.value = u
     }
-    return data
   }
 
-  async function updateContacto(clienteId, contactoId, payload) {
-    const { data } = await api.patch(`/clientes/${clienteId}/contactos/${contactoId}/`, payload)
-    if (currentCliente.value?.id === clienteId) {
-      const idx = currentCliente.value.contactos?.findIndex((c) => c.id === contactoId)
-      if (idx !== -1) currentCliente.value.contactos[idx] = data
-    }
-    return data
+  function isUploading(clientId, fieldName) {
+    return !!uploading.value[`${clientId}_${fieldName}`]
   }
 
-  async function deleteContacto(clienteId, contactoId) {
-    await api.delete(`/clientes/${clienteId}/contactos/${contactoId}/`)
-    if (currentCliente.value?.id === clienteId) {
-      currentCliente.value.contactos = currentCliente.value.contactos?.filter(
-        (c) => c.id !== contactoId
-      )
-    }
-  }
+  // Computed helpers
+  const total = { get value() { return clientes.value.length } }
 
   return {
     clientes,
-    currentCliente,
     loading,
+    uploading,
+    error,
     total,
     fetchClientes,
-    fetchCliente,
     createCliente,
     updateCliente,
     deleteCliente,
-    addContacto,
-    updateContacto,
-    deleteContacto,
+    uploadFile,
+    isUploading,
   }
 })
