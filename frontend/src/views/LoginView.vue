@@ -86,12 +86,12 @@ async function handleLogin() {
 
             <!-- Username -->
             <div class="space-y-1.5">
-              <Label for="username">Usuario</Label>
+              <Label for="username">Correo Unergy</Label>
               <Input
                 id="username"
                 v-model="form.username"
                 type="text"
-                placeholder="tu_usuario"
+                placeholder="nombre@unergy.io"
                 autocomplete="username"
                 :disabled="loading"
               />

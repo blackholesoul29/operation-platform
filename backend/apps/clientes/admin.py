@@ -3,23 +3,15 @@ from django.contrib import admin
 from .models import Cliente, Contacto
 
 
-class ContactoInline(admin.TabularInline):
-    model = Contacto
-    extra = 1
-    fields = ['nombre', 'cargo', 'email', 'telefono', 'es_principal']
-
-
 @admin.register(Cliente)
 class ClienteAdmin(admin.ModelAdmin):
-    list_display = ['nombre', 'nit', 'segmento', 'ciudad', 'comercial_asignado', 'activo', 'created_at']
-    list_filter = ['segmento', 'activo', 'comercial_asignado']
-    search_fields = ['nombre', 'nit', 'ciudad']
-    inlines = [ContactoInline]
-    readonly_fields = ['created_at', 'updated_at']
+    list_display = ['razon_social', 'nit', 'tipo', 'etapa', 'ciudad', 'creado_en']
+    list_filter = ['tipo', 'etapa', 'departamento']
+    search_fields = ['razon_social', 'nit', 'email']
 
 
 @admin.register(Contacto)
 class ContactoAdmin(admin.ModelAdmin):
-    list_display = ['nombre', 'cliente', 'cargo', 'email', 'telefono', 'es_principal']
-    list_filter = ['es_principal']
-    search_fields = ['nombre', 'email', 'cliente__nombre']
+    list_display = ['nombre_completo', 'cliente', 'cargo', 'es_decisor', 'email']
+    list_filter = ['es_decisor']
+    search_fields = ['nombre_completo', 'email']

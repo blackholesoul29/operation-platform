@@ -13,6 +13,8 @@ import {
   Users,
   LogOut,
   X,
+  Activity,
+  Receipt,
 } from 'lucide-vue-next'
 import Avatar from '@/components/ui/Avatar.vue'
 
@@ -32,6 +34,11 @@ const navItems = computed(() => {
     { label: 'Pipeline', icon: Kanban, to: '/pipeline', name: 'pipeline' },
     { label: 'Deals', icon: Briefcase, to: '/deals', name: 'deals' },
     { label: 'Clientes', icon: Building2, to: '/clientes', name: 'clientes' },
+    { separator: true },
+    { label: 'Proyectos', icon: Zap, to: '/proyectos', name: 'proyectos' },
+    { label: 'CGM', icon: Activity, to: '/cgm', name: 'cgm' },
+    { label: 'Liquidaciones', icon: Receipt, to: '/liquidaciones', name: 'liquidaciones' },
+    { separator: true },
     { label: 'Documentos', icon: FolderOpen, to: '/documentos', name: 'documentos' },
     { label: 'Tareas', icon: CheckSquare, to: '/tareas', name: 'tareas' },
   ]

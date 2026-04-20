@@ -1,0 +1,18 @@
+{
+  "name": "plataforma-operaciones",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite --port 4000",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.4.27",
+    "lucide-vue-next": "^0.395.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.5",
+    "vite": "^5.3.1"
+  }
+}

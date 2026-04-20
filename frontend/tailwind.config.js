@@ -38,6 +38,18 @@ module.exports = {
           DEFAULT: 'hsl(var(--popover))',
           foreground: 'hsl(var(--popover-foreground))',
         },
+        // Colores directos Unergy
+        unergy: {
+          purple:  '#915BD8',
+          dark:    '#2C2039',
+          avena:   '#FDFAF7',
+          solar:   '#F6FF72',
+          card:    '#362848',
+          hover:   '#422D57',
+          border:  '#4A3560',
+          muted:   '#A89EC0',
+          faded:   '#6B5F80',
+        },
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -45,11 +57,9 @@ module.exports = {
         sm: 'calc(var(--radius) - 4px)',
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Lato', 'system-ui', 'sans-serif'],
       },
     },
   },
-  plugins: [require('tailwindcss/plugin')(function({ addBase }) {
-    addBase({})
-  })],
+  plugins: [],
 }
